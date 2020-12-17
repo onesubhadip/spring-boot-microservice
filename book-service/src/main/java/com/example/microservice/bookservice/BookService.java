@@ -1,6 +1,7 @@
 package com.example.microservice.bookservice;
 
 import com.example.microservice.bookservice.model.Book;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,16 @@ public class BookService {
     }
 
     public void updateBook(UUID id, Book newBook) {
-        Book oldBook = bookRepo.findById(id).get();
-        oldBook.setAuthor(newBook.getAuthor());
-        oldBook.setPublisher(newBook.getPublisher());
-        oldBook.setTitle(newBook.getTitle());
+        Book oldBook = bookRepo.findById(id).orElseThrow();
+        if(StringUtils.isNotBlank(newBook.getAuthor())) {
+            oldBook.setAuthor(newBook.getAuthor());
+        }
+        if(StringUtils.isNotBlank(newBook.getPublisher())) {
+            oldBook.setAuthor(newBook.getPublisher());
+        }
+        if(StringUtils.isNotBlank(newBook.getTitle())) {
+            oldBook.setAuthor(newBook.getTitle());
+        }
         bookRepo.save(oldBook);
     }
 }
