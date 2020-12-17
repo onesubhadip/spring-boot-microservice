@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,33 +19,34 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/books")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/books")
+    @GetMapping("/")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("/books/{book_id}")
+    @GetMapping("/{book_id}")
     public ResponseEntity<Book> getBookById(@PathVariable("book_id") UUID id) {
         return ResponseEntity.of(bookService.getBookById(id));
     }
 
-    @PostMapping(value = "/books", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UUID saveBook(@RequestBody Book book) {
         return bookService.saveBook(book);
     }
 
-    @DeleteMapping("/books/{book_id}")
+    @DeleteMapping("/{book_id}")
     public void deleteBookById(@PathVariable("book_id") UUID id) {
         bookService.deleteBook(id);
     }
 
-    @PutMapping("/books/{book_id}")
+    @PutMapping("/{book_id}")
     public void updateBook(@PathVariable("book_id") UUID id, @RequestBody Book book) {
         bookService.updateBook(id, book);
     }
