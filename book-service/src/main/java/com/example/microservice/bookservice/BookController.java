@@ -25,7 +25,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/")
+    @GetMapping
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
@@ -35,7 +35,7 @@ public class BookController {
         return ResponseEntity.of(bookService.getBookById(id));
     }
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UUID saveBook(@RequestBody Book book) {
         return bookService.saveBook(book);
