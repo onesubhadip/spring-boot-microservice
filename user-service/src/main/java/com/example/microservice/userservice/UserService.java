@@ -42,7 +42,7 @@ public class UserService {
             userFormDB.setLastName(userInfo.getLastName());
         }
         if(userInfo.getDob() != null) {
-            userFormDB.setLastName(userInfo.getLastName());
+            userFormDB.setDob(userInfo.getDob());
         }
         userRepo.save(userFormDB);
     }
