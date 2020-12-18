@@ -1,0 +1,15 @@
+version: "3.8"
+services: 
+
+  users-mysql-db:
+    image: mysql:5.7
+    volumes:
+      - books-mysql-data:/var/lib/mysql
+    ports: 
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: users_db
+
+volumes:
+  books-mysql-data:
