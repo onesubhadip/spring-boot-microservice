@@ -24,7 +24,6 @@ public class UserService {
     }
 
     public UUID createUser(User userDto) {
-        userDto.setId(UUID.randomUUID());
         userRepo.saveAndFlush(userDto);
         return userDto.getId();
     }
