@@ -11,6 +11,7 @@ services:
     environment: 
       SPRING_PROFILES_ACTIVE: docker
       MYSQL_HOST: users-mysql-db
+      MYSQL_PORT: 3306
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
       MYSQL_DB: users_db
@@ -40,3 +41,4 @@ services:
 networks:
   spring-boot-microservice:
     driver: bridge
+    

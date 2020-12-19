@@ -7,9 +7,15 @@ services:
       - books-mysql-data:/var/lib/mysql
     ports: 
       - 13306:3306
+    networks: 
+      - spring-boot-microservice
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: users_db
 
 volumes:
   books-mysql-data:
+
+networks:
+  spring-boot-microservice:
+    driver: bridge
