@@ -1,0 +1,11 @@
+server:
+  port: 8081
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      host: "localhost"
+      database: "book-service-db"
+      username: "root"
+      password: "secret"
