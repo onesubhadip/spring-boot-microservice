@@ -49,6 +49,9 @@ services:
       - "10082:8080"
     environment: 
       SPRING_PROFILES_ACTIVE: docker
+      BOOK_SERVICE_HOST: book-service
+      USER_SERVICE_HOST: user-service
+      DISCOVERY_HOST: api-discovery
 
 networks:
   spring-boot-microservice:
