@@ -1,0 +1,20 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: api-discovery
+  cloud:
+    loadbalancer:
+      # Use Spring cloud load balancer as Ribbon is in maintenance mode
+      ribbon:
+        enabled: false
