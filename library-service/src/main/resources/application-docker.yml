@@ -6,7 +6,3 @@ eureka:
     serviceUrl:
       defaultZone: http://${DISCOVERY_HOST}:8761/eureka/
 
-app:
-  url:
-    book-service: http://${BOOK_SERVICE_HOST}:8081
-    user-service: http://${USER_SERVICE_HOST}:8082

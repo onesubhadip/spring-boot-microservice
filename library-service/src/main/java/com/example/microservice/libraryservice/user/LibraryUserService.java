@@ -1,11 +1,12 @@
 package com.example.microservice.libraryservice.user;
 
-import com.example.microservice.libraryservice.issue.LibraryIssueService;
+import com.example.microservice.libraryservice.ServiceName;
 import com.example.microservice.libraryservice.book.dto.BookDto;
+import com.example.microservice.libraryservice.issue.LibraryIssueService;
 import com.example.microservice.libraryservice.user.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -27,18 +28,28 @@ public class LibraryUserService {
     @Autowired
     private LibraryIssueService libraryIssueService;
 
-    @Value("${app.url.user-service}")
-    private String userServiceEndPoint;
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private ServiceName serviceName;
+
+    private String userServiceUrl() {
+        return discoveryClient.getInstances(serviceName.getUserService())
+                .get(0)
+                .getUri()
+                .toString() + "/users/";
+    }
 
     public List<UserDto> getAllUsers() {
-        return restTemplate.exchange(userServiceEndPoint + "/users",
+        return restTemplate.exchange(userServiceUrl(),
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<UserDto>>() {})
                 .getBody();
     }
 
     public Optional<UserDto> getUserInfo(UUID id) {
         try{
-            UserDto user = restTemplate.exchange(userServiceEndPoint + "/users/" + id.toString(),
+            UserDto user = restTemplate.exchange(userServiceUrl() + id.toString(),
                     HttpMethod.GET, null, UserDto.class)
                     .getBody();
             assert user != null;
@@ -54,7 +65,7 @@ public class LibraryUserService {
 
     public UUID addUser(UserDto userDto) {
         HttpEntity<UserDto> httpEntity = new HttpEntity<>(userDto);
-        return restTemplate.exchange(userServiceEndPoint + "/users",
+        return restTemplate.exchange(userServiceUrl(),
                 HttpMethod.POST, httpEntity, UUID.class)
                 .getBody();
     }
@@ -62,12 +73,12 @@ public class LibraryUserService {
     public void removeUser(UUID id) {
         libraryIssueService.releaseAllBooksForUser(id);
 
-        restTemplate.delete(userServiceEndPoint + "/users/" + id.toString());
+        restTemplate.delete(userServiceUrl() + id.toString());
     }
 
     public void updateUserInfo(UUID id, UserDto userDto) {
         try{
-            restTemplate.put(userServiceEndPoint + "/users/" + id.toString(), userDto);
+            restTemplate.put(userServiceUrl() + id.toString(), userDto);
         }catch (HttpClientErrorException e) {
             log.error("Could not update as user is not found for id {}", id);
         }

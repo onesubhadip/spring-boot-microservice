@@ -9,3 +9,8 @@ eureka:
   instance:
     statusPageUrlPath: /actuator/info
     healthCheckUrlPath: /actuator/health
+
+app:
+  api:
+    book-service: "api-book-service"
+    user-service: "api-user-service"

@@ -1,9 +1,10 @@
 package com.example.microservice.libraryservice.book;
 
+import com.example.microservice.libraryservice.ServiceName;
 import com.example.microservice.libraryservice.book.dto.BookDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -22,20 +23,29 @@ public class LibraryBooksService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${app.url.book-service}")
-    private String bookServiceEndPoint;
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private ServiceName serviceName;
+
+    private String bookServiceUrl() {
+        return discoveryClient.getInstances(serviceName.getBookService())
+                .get(0)
+                .getUri()
+                .toString() + "/books/";
+    }
 
     public List<BookDto> getAllBooks() {
-
-       return restTemplate.exchange(bookServiceEndPoint + "/books",
-               HttpMethod.GET, null, new ParameterizedTypeReference<List<BookDto>>() {})
+        return restTemplate.exchange(bookServiceUrl(),
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<BookDto>>() {})
                .getBody();
     }
 
     public Optional<BookDto> getBookInfo(UUID id) {
 
         try{
-            return Optional.ofNullable(restTemplate.exchange(bookServiceEndPoint + "/books/" + id.toString(),
+            return Optional.ofNullable(restTemplate.exchange(bookServiceUrl() + id.toString(),
                     HttpMethod.GET, null, BookDto.class)
                     .getBody());
         }catch (HttpClientErrorException e) {
@@ -47,12 +57,12 @@ public class LibraryBooksService {
     public UUID addNewBook(BookDto bookDto) {
 
         HttpEntity<BookDto> httpEntity = new HttpEntity<>(bookDto);
-        return restTemplate.exchange(bookServiceEndPoint + "/books",
+        return restTemplate.exchange(bookServiceUrl(),
                 HttpMethod.POST, httpEntity, UUID.class)
                 .getBody();
     }
 
     public void deleteBook(UUID id) {
-        restTemplate.delete(bookServiceEndPoint + "/books/" + id.toString());
+        restTemplate.delete(bookServiceUrl() + id.toString());
     }
 }
