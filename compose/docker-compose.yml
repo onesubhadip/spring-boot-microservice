@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+
+  api-discovery:
+    build:
+      context: ../library-api-discovery
+    image: library-api-discovery:latest
+    networks: 
+      - spring-boot-microservice
+    ports: 
+      - 18761:8761
+
   user-service:
     build:
       context: ../user-service
@@ -26,6 +36,7 @@ services:
       - "10081:8080"
     environment: 
       SPRING_PROFILES_ACTIVE: docker
+      DISCOVERY-HOST: api-discovery
     
   library-service:
     build: 
@@ -41,4 +52,3 @@ services:
 networks:
   spring-boot-microservice:
     driver: bridge
-    

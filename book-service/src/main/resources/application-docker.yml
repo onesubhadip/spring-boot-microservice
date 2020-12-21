@@ -9,3 +9,8 @@ spring:
       database: "book-service-db"
       username: "root"
       password: "secret"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY-HOST}:8761/eureka/

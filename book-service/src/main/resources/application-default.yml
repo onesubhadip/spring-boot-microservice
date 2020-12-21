@@ -9,3 +9,9 @@ spring:
       database: "book-service-db"
       username: "root"
       password: "secret"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
