@@ -25,6 +25,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
       MYSQL_DB: users_db
+      DISCOVERY-HOST: api-discovery
   
   book-service:
     build:
