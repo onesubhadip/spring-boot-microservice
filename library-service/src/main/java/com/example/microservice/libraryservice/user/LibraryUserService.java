@@ -23,7 +23,7 @@ import java.util.UUID;
 public class LibraryUserService {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate lbRestTemplate;
 
     @Autowired
     private LibraryIssueService libraryIssueService;
@@ -35,21 +35,18 @@ public class LibraryUserService {
     private ServiceName serviceName;
 
     private String userServiceUrl() {
-        return discoveryClient.getInstances(serviceName.getUserService())
-                .get(0)
-                .getUri()
-                .toString() + "/users/";
+        return "http://" + serviceName.getUserService() + "/users/";
     }
 
     public List<UserDto> getAllUsers() {
-        return restTemplate.exchange(userServiceUrl(),
+        return lbRestTemplate.exchange(userServiceUrl(),
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<UserDto>>() {})
                 .getBody();
     }
 
     public Optional<UserDto> getUserInfo(UUID id) {
         try{
-            UserDto user = restTemplate.exchange(userServiceUrl() + id.toString(),
+            UserDto user = lbRestTemplate.exchange(userServiceUrl() + id.toString(),
                     HttpMethod.GET, null, UserDto.class)
                     .getBody();
             assert user != null;
@@ -65,7 +62,7 @@ public class LibraryUserService {
 
     public UUID addUser(UserDto userDto) {
         HttpEntity<UserDto> httpEntity = new HttpEntity<>(userDto);
-        return restTemplate.exchange(userServiceUrl(),
+        return lbRestTemplate.exchange(userServiceUrl(),
                 HttpMethod.POST, httpEntity, UUID.class)
                 .getBody();
     }
@@ -73,12 +70,12 @@ public class LibraryUserService {
     public void removeUser(UUID id) {
         libraryIssueService.releaseAllBooksForUser(id);
 
-        restTemplate.delete(userServiceUrl() + id.toString());
+        lbRestTemplate.delete(userServiceUrl() + id.toString());
     }
 
     public void updateUserInfo(UUID id, UserDto userDto) {
         try{
-            restTemplate.put(userServiceUrl() + id.toString(), userDto);
+            lbRestTemplate.put(userServiceUrl() + id.toString(), userDto);
         }catch (HttpClientErrorException e) {
             log.error("Could not update as user is not found for id {}", id);
         }
