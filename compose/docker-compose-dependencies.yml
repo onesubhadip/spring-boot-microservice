@@ -1,7 +1,7 @@
 version: "3.8"
 services: 
 
-  users-mysql-db:
+  mysql:
     image: mysql:5.7
     volumes:
       - users-mysql-data:/var/lib/mysql
