@@ -1,0 +1,26 @@
+logging:
+  level:
+    org.springframework.cloud: 'DEBUG'
+
+spring:
+  application:
+    name: api-config-server
+
+  cloud:
+    config:
+      discovery:
+        enabled: true
+      server:
+        git:
+          uri: https://github.com/onesubhadip/spring-boot-microservice-config.git
+#          skipSslValidation: true
+          cloneOnStart: true
+          searchPaths: '{application}'
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    statusPageUrlPath: /actuator/info
+    healthCheckUrlPath: /actuator/health

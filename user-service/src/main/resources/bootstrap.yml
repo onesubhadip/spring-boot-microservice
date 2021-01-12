@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: api-user-service
+  cloud:
+    config:
+      label: main
+      fail-fast: true
+      discovery:
+        enabled: true
+        serviceId: api-config-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY_HOST:localhost}:8761/eureka/
